@@ -256,7 +256,7 @@ export const hasPermission = (roles: string[], route: RoutesDataItem): boolean =
   if (roles.includes('admin')) {
     return true;
   }
-
+  console.log(route);
   if (route.roles) {
     return route.roles.some(role => roles.includes(role));
     //return roles.some(role => route.roles?.includes(role));

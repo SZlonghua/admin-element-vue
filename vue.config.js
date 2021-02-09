@@ -40,7 +40,8 @@ module.exports = {
             // 'vue': 'Vue',
             // 'vue-router': 'VueRouter',
             // 'element-ui': 'ELEMENT'            
-        }
+        },
+        devtool: 'source-map'
     },
     chainWebpack(config) {
 

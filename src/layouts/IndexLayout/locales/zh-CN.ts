@@ -35,4 +35,8 @@ export default {
   'index-layout.menu.roles.all': '用户都有权限',
   'index-layout.menu.roles.user': 'Users有权限',
   'index-layout.menu.roles.test': 'Tests有权限',
+
+  'index-layout.menu.sys': '系统',
+  'index-layout.menu.sys.schedule': '调度管理',
+  'index-layout.menu.sys.schedule.list': '调度列表',
 };

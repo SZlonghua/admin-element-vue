@@ -199,17 +199,41 @@ const IndexLayoutRoutes: Array<RoutesDataItem> = [
       },
       {
         icon: 'detail',
-        roles: ['user'],
+        roles: ['user','admin'],
         title: 'index-layout.menu.roles.user',
         path: 'user',
         component: ()=> import('@/views/roles/user/index.vue'),
       },
       {
         icon: 'detail',
-        roles: ['test'],
+        roles: ['test','admin'],
         title: 'index-layout.menu.roles.test',
         path: 'test',
         component: ()=> import('@/views/roles/test/index.vue'),
+      },
+    ],
+  },
+
+  {
+    icon: 'page',
+    title: 'index-layout.menu.sys',
+    path: '/sys',
+    redirect: '/sys/schedule',
+    component: BlankLayout,
+    children: [
+      {
+        icon: 'list',
+        title: 'index-layout.menu.sys.schedule',
+        path: 'schedule',
+        redirect: '/sys/schedule/list',
+        component: BlankLayout,
+        children: [
+          {
+            title: 'index-layout.menu.sys.schedule.list',
+            path: 'list',
+            component: ()=> import('@/views/sys/schedule/list/index.vue'),
+          },
+        ],
       },
     ],
   },
