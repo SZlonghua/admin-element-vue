@@ -25,6 +25,20 @@ mock[`GET ${VUE_APP_APIHOST || ''}/schedule/list`] = (req, res) => {
 };
 
 
+mock[`GET ${VUE_APP_APIHOST || ''}/schedule/list/*`] = (req, res) => {
+  res.send({
+    code: 0,
+    data: mockjs.mock({
+      jobId: '@integer(1)',
+      'taskName|1': ['ceshissss'],
+      'taskGroup|1': ['原创定制最好的网页插件小功能'],
+      'description|1': ['http://wyxgn.com'],
+      'cron|1': ['header'],
+      'state|1': ['0'],
+    }),
+  });
+};
+
 module.exports = {
   ...mock
 };

@@ -12,11 +12,9 @@
             <el-button key="submit" type="primary" :loading="onSubmitLoading" @click="onFinish">提交</el-button>
         </template>
 
-<!--        <el-form :model="modelRef" :rules="rulesRef" ref="formRef" label-width="80px">
-            <el-form-item label="位置" prop="type">
-                <TypeSelect v-model="modelRef.type" placeholder="请选择" style="width:100%" />
-            </el-form-item>
-            <el-form-item label="名称" prop="name" >
+        <el-form :model="modelRef" :rules="rulesRef" ref="formRef" label-width="80px">
+
+<!--            <el-form-item label="名称" prop="name" >
                 <el-input v-model="modelRef.name" placeholder="请输入名称" />
             </el-form-item>
             <el-form-item label="网址" prop="href" >
@@ -25,8 +23,23 @@
 
             <el-form-item label="备注" prop="desc" >
                 <el-input v-model="modelRef.desc" placeholder="请输入备注" />
+            </el-form-item>-->
+            <el-form-item label="任务名称" prop="taskName" >
+              <el-input v-model="modelRef.taskName" placeholder="请输入名称" />
             </el-form-item>
-        </el-form>-->
+            <el-form-item label="任务组" prop="taskGroup" >
+              <el-input v-model="modelRef.taskGroup" placeholder="请输入任务组" />
+            </el-form-item>
+            <el-form-item label="描述" prop="description" >
+              <el-input v-model="modelRef.desc" placeholder="描述" />
+            </el-form-item>
+            <el-form-item label="状态" prop="state" >
+              <el-input v-model="modelRef.state" placeholder="请输入状态" />
+            </el-form-item>
+            <el-form-item label="cron表达式" prop="cron" >
+              <el-input v-model="modelRef.cron" placeholder="请输入cron" />
+            </el-form-item>
+        </el-form>
 
 
     </el-dialog>
@@ -40,18 +53,17 @@ import { TableListItem } from "../data.d";
 
 
 interface UpdateFormSetupData {
-    //modelRef: TableListItem;
-    /*rulesRef: any;
+    modelRef: TableListItem;
+    rulesRef: any;
     formRef: typeof ElForm;
     resetFields: () => void;
-    onFinish: () => Promise<void>;*/
-    id: string;
+    onFinish: () => Promise<void>;
 }
 
 export default defineComponent({
     name: 'UpdateForm',
     props: {
-        /*visible: {
+        visible: {
             type: Boolean,
             required: true
         },
@@ -70,7 +82,7 @@ export default defineComponent({
         onSubmit: {
             type: Function as PropType<(values: TableListItem, resetFields: () => void) => void>,
             required: true
-        }*/
+        }
     },
     /*components: {
         TypeSelect
@@ -79,48 +91,44 @@ export default defineComponent({
 
         const { t } = useI18n();
 
-        /*// 表单值
+        // 表单值
         const modelRef = reactive<TableListItem>({
-            id: props.values.id || 0,
-            name: props.values.name || '',
-            desc: props.values.desc || '',
-            href: props.values.href || '',
-            type: props.values.type || ''
+          jobId: props.values.jobId || 0,
+          taskName: props.values.taskName || '',
+          taskGroup: props.values.taskGroup || '',
+          description: props.values.description || '',
+          state: props.values.state || '',
+          cron: props.values.cron || '',
         });
+
         // 表单验证
         const rulesRef = reactive({
-            id: [],
-            name: [
-                {
-                    required: true,
-                    validator: async (rule: any, value: string) => {
-                        if (value === '' || !value) {
-                            throw new Error('请输入名称');
-                        } else if (value.length > 15) {
-                            throw new Error('长度不能大于15个字');
-                        }
-                    }
-                },
-            ],
-            desc: [], 
-            href: [
-                {
-                    required: true,
-                    validator: async (rule: any, value: string) => {
-                        if (value === '' || !value) {
-                            throw new Error('请输入网址');
-                        } else if (!/^(https?:)/.test(value)) {
-                            throw new Error('请输入正确的网址');
-                        }
-                    },
-                },
-            ],
-            type: [
-                {
-                    required: true,
-                    message: '请选择'
+          taskName: [
+            {
+              required: true,
+              validator: async (rule: any, value: string) => {
+                if (value === '' || !value) {
+                  throw new Error('请输入任务名称');
+                } else if (value.length > 15) {
+                  throw new Error('长度不能大于15个字');
                 }
-            ]         
+              }
+            },
+          ],
+          taskGroup: [],
+          description: [],
+          state: [
+            {
+              required: true,
+              message: '状态不能为空'
+            }
+          ],
+          cron: [
+            {
+              required: true,
+              message: 'cron不能为空'
+            }
+          ]
         });
         // form
         const formRef = ref<typeof ElForm>();
@@ -139,15 +147,14 @@ export default defineComponent({
                 // console.log('error', error);
                 ElMessage.warning(t('app.global.form.validatefields.catch'));
             }
-        };*/
+        };
         
         return {
-            /*modelRef,
+            modelRef,
             rulesRef,
             formRef: formRef as unknown as typeof ElForm,
             resetFields,
-            onFinish*/
-          id: '',
+            onFinish,
         }
 
     }

@@ -38,7 +38,7 @@
         <el-row>
           <el-col :span="8">
             <el-button type="primary" icon="el-icon-plus" @click="()=>setCreateFormVisible(true)">新增</el-button>
-            <el-button type="success" icon="el-icon-edit" >编辑</el-button>
+            <el-button type="success" icon="el-icon-edit" @click="() => detailUpdateData()">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" >删除</el-button>
           </el-col>
           <el-col :span="16" class="text-align-right">
@@ -51,7 +51,7 @@
         </el-row>
       </template>
 
-      <el-table row-key="jobId" :data="list" v-loading="loading" >
+      <el-table row-key="jobId" :data="list" v-loading="loading" ref="tableRef" @selection-change="handleSelectionChange">
 
 
         <el-table-column
@@ -162,7 +162,7 @@ import {PaginationConfig, TableListItem} from "@/views/sys/schedule/list/data";
 import {computed, defineComponent, onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {StateType as ListStateType} from "@/views/sys/schedule/list/store";
-import {ElMessage} from "element-plus";
+import {ElForm, ElMessage, ElTable} from "element-plus";
 import CreateForm from "@/views/sys/schedule/list/components/CreateForm.vue";
 import UpdateForm from "@/views/sys/schedule/list/components/UpdateForm.vue";
 
@@ -176,18 +176,32 @@ interface ListScheduleTablePageSetupData {
   createSubmitLoading: boolean;
   createSubmit: (values: Omit<TableListItem, 'jobId'>, resetFields: () => void) => Promise<void>;
   detailUpdateLoading: number[];
-  detailUpdateData: (jobId: number) => Promise<void>;
+  detailUpdateData: () => Promise<void>;
   updateData: Partial<TableListItem>;
   updateFormVisible: boolean;
   updataFormCancel:  () => void;
   updateSubmitLoading: boolean;
   updateSubmit:  (values: TableListItem, resetFields: () => void) => Promise<void>;
+  selectioned: number[];
+  tableRef: typeof ElTable;
 }
 
 export default defineComponent({
   name: "scheduleList",
   components: {UpdateForm, CreateForm},
-  setup(): ListScheduleTablePageSetupData{
+  methods: {
+    handleSelectionChange(selection: []) {
+      this.selectioned = selection.map(item=>{
+        const r = item as TableListItem;
+        return r.jobId;
+      });
+      console.log("selection:"+this.selectioned);
+    },
+    /*clearSelect(){
+      (this.$refs.tableRef as any ).clearSelection();
+    }*/
+  },
+  setup(prop,ctx): ListScheduleTablePageSetupData{
     const store = useStore<{ ListScheduleTable: ListStateType}>();
 
 
@@ -196,6 +210,9 @@ export default defineComponent({
 
     // 列表分页
     const pagination = computed<PaginationConfig>(() => store.state.ListScheduleTable.tableData.pagination);
+
+    // form
+    const tableRef = ref<typeof ElTable>();
 
     // 获取数据
     const loading = ref<boolean>(false);
@@ -238,7 +255,7 @@ export default defineComponent({
       createSubmitLoading.value = false;
     };
 
-
+    const selectioned = ref<number[]>([]);
 
     // 编辑弹框 - visible
     const updateFormVisible = ref<boolean>(false);
@@ -247,14 +264,15 @@ export default defineComponent({
     }
     const updataFormCancel = () => {
       setUpdateFormVisible(false);
-      store.commit('ListSearchTable/setUpdateData',{});
+      store.commit('ListScheduleTable/setUpdateData',{});
+      //(tableRef.value?.methods as any).clearSelect();
     }
     // 编辑弹框 - 提交 loading
     const updateSubmitLoading = ref<boolean>(false);
     // 编辑弹框 - 提交
     const updateSubmit = async (values: TableListItem, resetFields: () => void) => {
       updateSubmitLoading.value = true;
-      const res: boolean = await store.dispatch('ListSearchTable/updateTableData',values);
+      const res: boolean = await store.dispatch('ListScheduleTable/updateTableData',values);
       if(res === true) {
         updataFormCancel();
         ElMessage.success('编辑成功！');
@@ -264,13 +282,27 @@ export default defineComponent({
     }
 
     const detailUpdateLoading = ref<number[]>([]);
-    const detailUpdateData = async (jobId: number) => {
-      detailUpdateLoading.value = [jobId];
+    const detailUpdateData = async () => {
+      /*detailUpdateLoading.value = [jobId];
       const res: boolean = await store.dispatch('ListSearchTable/queryUpdateData',jobId);
       if(res===true) {
         setUpdateFormVisible(true);
       }
-      detailUpdateLoading.value = [];
+      detailUpdateLoading.value = [];*/
+      //console.log(prop.selectioned);
+      const rows = selectioned.value;
+      if(rows.length==0){
+        ElMessage.warning('请选中其中一个！');
+        return;
+      }
+      if(rows.length>1){
+        ElMessage.warning('只能选中一个！');
+        return;
+      }
+      const res: boolean = await store.dispatch('ListScheduleTable/queryUpdateData',rows[0]);
+      if(res===true) {
+        setUpdateFormVisible(true);
+      }
     }
 
     // 编辑弹框 data
@@ -278,7 +310,10 @@ export default defineComponent({
 
     onMounted(()=> {
       getList(1);
-    })
+    });
+
+
+
     return {
       list: list as unknown as TableListItem[],
       pagination: pagination as unknown as PaginationConfig,
@@ -295,6 +330,8 @@ export default defineComponent({
       updataFormCancel,
       updateSubmitLoading: updateSubmitLoading as unknown as boolean,
       updateSubmit,
+      selectioned: selectioned as unknown as number[],
+      tableRef: tableRef as unknown as typeof ElTable,
     }
 
   }

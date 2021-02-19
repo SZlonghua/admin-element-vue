@@ -33,5 +33,5 @@ export async function removeData(jobId: number): Promise<any> {
 }
 
 export async function detailData(id: number): Promise<any> {
-  return request({url: `/pages/list/${id}`});
+  return request({url: `/schedule/list/${id}`});
 }
