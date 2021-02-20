@@ -14,6 +14,7 @@ import {
 export interface StateType {
     tableData: TableDataType;
     updateData: Partial<TableListItem>;
+    infoData: Partial<TableListItem>;
 }
 
 export interface ModuleType extends StoreModuleType<StateType> {
@@ -21,6 +22,7 @@ export interface ModuleType extends StoreModuleType<StateType> {
     mutations: {
         setTableData: Mutation<StateType>;
         setUpdateData: Mutation<StateType>;
+        setInfoData: Mutation<StateType>;
     };
     actions: {
         queryTableData: Action<StateType, StateType>;
@@ -28,6 +30,7 @@ export interface ModuleType extends StoreModuleType<StateType> {
         createTableData: Action<StateType, StateType>;
         queryUpdateData: Action<StateType, StateType>;
         updateTableData: Action<StateType, StateType>;
+        queryInfoData: Action<StateType, StateType>;
     };
 }
 const initState: StateType = {
@@ -42,6 +45,7 @@ const initState: StateType = {
       },
     },
     updateData: {},
+    infoData: {},
 };
 
 const StoreModel: ModuleType = {
@@ -56,6 +60,9 @@ const StoreModel: ModuleType = {
         },
         setUpdateData(state, payload) {
             state.updateData = payload;
+        },
+        setInfoData(state, payload) {
+            state.infoData = payload;
         },
     },
     actions: {
@@ -79,7 +86,7 @@ const StoreModel: ModuleType = {
         },
         async deleteTableData({ commit }, payload: number ) {
             try {
-                await removeData(payload);
+                //await removeData(payload);
                 return true;
             } catch (error) {
                 return false;
@@ -122,7 +129,20 @@ const StoreModel: ModuleType = {
             } catch (error) {
                 return false;
             }
-        },        
+        },
+        async queryInfoData({ commit }, payload: number ) {
+            try {
+                const response: ResponseData = await detailData(payload);
+                const { data } = response;
+                commit('setInfoData',{
+                    ...initState.infoData,
+                    ...data,
+                });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
     }
 };
 

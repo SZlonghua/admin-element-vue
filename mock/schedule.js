@@ -8,9 +8,9 @@ mock[`GET ${VUE_APP_APIHOST || ''}/schedule/list`] = (req, res) => {
   res.send({
     code: 0,
     data: mockjs.mock({
-      total: 8,
+      total: 20,
       currentPage: 1,
-      'list|8': [
+      'list|10': [
         {
           jobId: '@integer(1)',
           'taskName|1': ['任务1', '任务2'],
@@ -30,7 +30,7 @@ mock[`GET ${VUE_APP_APIHOST || ''}/schedule/list/*`] = (req, res) => {
     code: 0,
     data: mockjs.mock({
       jobId: '@integer(1)',
-      'taskName|1': ['ceshissss'],
+      'taskName|1': ['ceshissss','ceshissss1111'],
       'taskGroup|1': ['原创定制最好的网页插件小功能'],
       'description|1': ['http://wyxgn.com'],
       'cron|1': ['header'],

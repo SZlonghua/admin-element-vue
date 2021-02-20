@@ -24,3 +24,10 @@ export interface TableDataType {
   list: TableListItem[];
   pagination: PaginationConfig;
 }
+
+export interface SearchListItem {
+  jobId: number;
+  taskName: string;
+  taskGroup: string;
+  cron: string;
+}
